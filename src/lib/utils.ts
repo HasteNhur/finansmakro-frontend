@@ -23,5 +23,7 @@ export function formatDate(date: string | Date): string {
 }
 
 export function formatCurrency(value: string): string {
-  return value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return typeof value === "string"
+    ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    : "";
 }

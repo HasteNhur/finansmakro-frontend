@@ -6,7 +6,9 @@ export function safeGetChangePercent(item: any): number {
   if (changePercent === undefined || changePercent === null) return 0;
   
   if (typeof changePercent === 'string') {
-    return parseFloat(changePercent.replace(/[+%]/g, '')) || 0;
+    return parseFloat(
+      typeof changePercent === 'string' ? changePercent.replace(/[+%]/g, '') : ''
+    ) || 0;
   }
   
   return parseFloat(changePercent) || 0;
