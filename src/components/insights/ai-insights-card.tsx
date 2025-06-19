@@ -58,12 +58,10 @@ export default function AIInsightsCard() {
           </div>
           
           <p className="text-gray-800 leading-relaxed mb-3" dangerouslySetInnerHTML={{ 
-            __html: typeof insight.insightText === "string"
-              ? insight.insightText
-                  .replace(/(▲)/g, '<span class="font-medium text-green-600">$1</span>')
-                  .replace(/(▼)/g, '<span class="font-medium text-red-600">$1</span>')
-                  .replace(/(◆)/g, '<span class="font-medium text-gray-600">$1</span>')
-              : ""
+            __html: insight.insightText
+              .replace(/(▲)/g, '<span class="font-medium text-green-600">$1</span>')
+              .replace(/(▼)/g, '<span class="font-medium text-red-600">$1</span>')
+              .replace(/(◆)/g, '<span class="font-medium text-gray-600">$1</span>')
           }} />
           
 

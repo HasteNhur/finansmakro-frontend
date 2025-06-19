@@ -63,12 +63,10 @@ export default function CryptoInsightsCard() {
           </div>
           
           <p className="text-gray-800 leading-relaxed mb-3" dangerouslySetInnerHTML={{ 
-            __html: typeof insight === "string"
-              ? insight
-                  .replace(/(▲)/g, '<span class="font-medium text-lg text-green-600">$1</span>')
-                  .replace(/(▼)/g, '<span class="font-medium text-lg text-red-600">$1</span>')
-                  .replace(/(◆)/g, '<span class="font-medium text-lg text-gray-600">$1</span>')
-              : ""
+            __html: insight
+              .replace(/(▲)/g, '<span class="font-medium text-lg text-green-600">$1</span>')
+              .replace(/(▼)/g, '<span class="font-medium text-lg text-red-600">$1</span>')
+              .replace(/(◆)/g, '<span class="font-medium text-lg text-gray-600">$1</span>')
           }} />
           
 
