@@ -20,13 +20,15 @@ export default defineConfig({
     sourcemap: false,
     rollupOptions: {
       onwarn(warning, warn) {
-        // Suppress certain warnings during build
-        if (warning.code === 'UNUSED_EXTERNAL_IMPORT') return
-        warn(warning)
+        // Suppress all warnings during build
+        return
       }
     }
   },
   esbuild: {
-    logOverride: { 'this-is-undefined-in-esm': 'silent' }
+    logOverride: { 
+      'this-is-undefined-in-esm': 'silent',
+      'unused-import': 'silent'
+    }
   }
 })

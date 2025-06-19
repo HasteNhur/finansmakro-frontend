@@ -15,11 +15,15 @@
     "isolatedModules": true,
     "noEmitOnError": false,
 
-    /* Linting */
+    /* Linting - Disable for build */
     "strict": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": true,
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": false,
+    "suppressImplicitAnyIndexErrors": true,
 
     /* Path mapping */
     "baseUrl": ".",

@@ -61,7 +61,7 @@ export default function Home() {
       const topCrypto = cryptoData.slice(0, 5);
       return topCrypto.map(crypto => ({
         name: crypto.name.replace('/NOK', ''),
-        change: parseFloat(crypto.changePercent.replace(/[+%]/g, '')),
+        change: parseFloat(crypto.change_percent?.toString().replace(/[+%]/g, '') || '0'),
         icon: crypto.symbol === 'BTC/NOK' ? '₿' : 
               crypto.symbol === 'ETH/NOK' ? '⟠' : 
               crypto.symbol === 'ADA/NOK' ? '🔺' : 
