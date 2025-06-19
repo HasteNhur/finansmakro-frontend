@@ -61,8 +61,8 @@ export default function Home() {
       // Crypto sector data
       const topCrypto = cryptoData.slice(0, 5);
       return topCrypto.map(crypto => ({
-        name: crypto.name.replace('/NOK', ''),
-        change: parseFloat(crypto.change_percent?.toString().replace(/[+%]/g, '') || '0'),
+        name: typeof crypto.name === 'string' ? crypto.name.replace('/NOK', '') : '',
+        change: parseFloat(typeof crypto.change_percent === 'string' ? crypto.change_percent.replace(/[+%]/g, '') : '0'),
         icon: crypto.symbol === 'BTC/NOK' ? '₿' : 
               crypto.symbol === 'ETH/NOK' ? '⟠' : 
               crypto.symbol === 'ADA/NOK' ? '🔺' : 
@@ -84,7 +84,7 @@ export default function Home() {
         const stockItem = stockData.find(item => item.symbol === sector.symbol);
         if (stockItem) {
           statisticsData.push({
-            name: sector.name,
+            name: typeof stockItem.name === 'string' ? stockItem.name : '',
             change: safeGetChangePercent(stockItem),
             icon: sector.icon
           });
@@ -120,7 +120,7 @@ export default function Home() {
       
       // Add Styringsrente - show recent rate change trend (based on market sentiment)
       const styringsrenteChange = norwegianStocks.length > 0 ? 
-        (norwegianStocks.reduce((sum, stock) => sum + parseFloat(stock.changePercent.replace(/[+%]/g, '')), 0) / norwegianStocks.length) * 0.1 // Scaled correlation
+        (norwegianStocks.reduce((sum, stock) => sum + parseFloat(typeof stock.changePercent === 'string' ? stock.changePercent.replace(/[+%]/g, '') : '0'), 0) / norwegianStocks.length) * 0.1 // Scaled correlation
         : 0;
       
       statisticsData.push({
@@ -136,7 +136,7 @@ export default function Home() {
       
       if (shippingStocks.length > 0) {
         const avgShippingChange = shippingStocks.reduce((sum, stock) => {
-          return sum + parseFloat(stock.changePercent.replace(/[+%]/g, ''));
+          return sum + parseFloat(typeof stock.changePercent === 'string' ? stock.changePercent.replace(/[+%]/g, '') : '0');
         }, 0) / shippingStocks.length;
         
         statisticsData.push({
@@ -154,7 +154,7 @@ export default function Home() {
       if (brentCrude) {
         statisticsData.push({
           name: 'Brent Crude',
-          change: parseFloat(brentCrude.changePercent.replace(/[+%]/g, '')),
+          change: parseFloat(typeof brentCrude.changePercent === 'string' ? brentCrude.changePercent.replace(/[+%]/g, '') : '0'),
           icon: '⚫'
         });
       }
@@ -166,8 +166,8 @@ export default function Home() {
       
       if (nokCurrencies.length > 0) {
         const avgNokChange = nokCurrencies.reduce((sum, currency) => {
-          const changeValue = parseFloat(currency.changePercent.replace(/[+%-]/g, ''));
-          const isPositive = !currency.changePercent.includes('-');
+          const changeValue = parseFloat(typeof currency.changePercent === 'string' ? currency.changePercent.replace(/[+%-]/g, '') : '0');
+          const isPositive = typeof currency.changePercent === 'string' ? !currency.changePercent.includes('-') : false;
           return sum - (isPositive ? changeValue : -changeValue); // Inverse: stronger NOK = negative currency change
         }, 0) / nokCurrencies.length;
         
@@ -179,7 +179,7 @@ export default function Home() {
       } else if (stockData.length > 0) {
         // Fallback: derive NOK strength from Norwegian stock performance
         const stockPerformance = norwegianStocks.reduce((sum, stock) => {
-          return sum + parseFloat(stock.changePercent.replace(/[+%-]/g, ''));
+          return sum + parseFloat(typeof stock.changePercent === 'string' ? stock.changePercent.replace(/[+%-]/g, '') : '0');
         }, 0) / norwegianStocks.length;
         
         statisticsData.push({
@@ -192,8 +192,8 @@ export default function Home() {
       // Add EUR/NOK exchange rate
       const eurNok = marketData?.find(item => item.symbol === 'EUR/NOK');
       if (eurNok) {
-        const eurNokChange = parseFloat(eurNok.changePercent.replace(/[+%-]/g, ''));
-        const isPositiveChange = !eurNok.changePercent.includes('-');
+        const eurNokChange = parseFloat(typeof eurNok.changePercent === 'string' ? eurNok.changePercent.replace(/[+%-]/g, '') : '0');
+        const isPositiveChange = typeof eurNok.changePercent === 'string' ? !eurNok.changePercent.includes('-') : false;
         
         statisticsData.push({
           name: 'EUR/NOK',
@@ -203,7 +203,7 @@ export default function Home() {
       } else {
         // Fallback: derive EUR/NOK movement from market sentiment
         const marketSentiment = norwegianStocks.length > 0 ? 
-          (norwegianStocks.reduce((sum, stock) => sum + parseFloat(stock.changePercent.replace(/[+%-]/g, '')), 0) / norwegianStocks.length) * 0.2
+          (norwegianStocks.reduce((sum, stock) => sum + parseFloat(typeof stock.changePercent === 'string' ? stock.changePercent.replace(/[+%-]/g, '') : '0'), 0) / norwegianStocks.length) * 0.2
           : 0;
         
         statisticsData.push({
@@ -216,7 +216,7 @@ export default function Home() {
       // Add crypto performance summary (when in Makro mode)
       if (cryptoData.length > 0) {
         const avgCryptoChange = cryptoData.reduce((sum, crypto) => {
-          return sum + parseFloat(crypto.changePercent.replace(/[+%]/g, ''));
+          return sum + parseFloat(typeof crypto.changePercent === 'string' ? crypto.changePercent.replace(/[+%]/g, '') : '0');
         }, 0) / cryptoData.length;
         
         statisticsData.push({
@@ -375,20 +375,20 @@ export default function Home() {
                       
                       // Find dagens største endring (positiv eller negativ)
                       const sortedCryptos = cryptoData
-                        .filter(crypto => crypto.changePercent && crypto.symbol?.includes('/NOK'))
+                        .filter(crypto => typeof crypto.change_percent === 'string' && crypto.symbol?.includes('/NOK'))
                         .sort((a, b) => {
-                          const aChange = Math.abs(parseFloat(a.changePercent?.replace('%', '').replace('+', '') || '0'));
-                          const bChange = Math.abs(parseFloat(b.changePercent?.replace('%', '').replace('+', '') || '0'));
+                          const aChange = Math.abs(parseFloat(typeof a.change_percent === 'string' ? a.change_percent.replace('%', '').replace('+', '') : '0'));
+                          const bChange = Math.abs(parseFloat(typeof b.change_percent === 'string' ? b.change_percent.replace('%', '').replace('+', '') : '0'));
                           return bChange - aChange;
                         });
                       
                       if (sortedCryptos.length === 0) return "Analyserer kryptovaluta-bevegelser...";
                       
                       const topMover = sortedCryptos[0];
-                      const change = topMover.changePercent || '0%';
-                      const isPositive = !change.includes('-');
+                      const change = typeof topMover.change_percent === 'string' ? topMover.change_percent : '0%';
+                      const isPositive = typeof topMover.change_percent === 'string' ? !topMover.change_percent.includes('-') : false;
                       const direction = isPositive ? 'stiger' : 'faller';
-                      const symbol = topMover.symbol?.replace('/NOK', '') || topMover.name;
+                      const symbol = typeof topMover.symbol === 'string' ? topMover.symbol.replace('/NOK', '') : topMover.name;
                       
                       return `${topMover.name} ${direction} ${change} til ${topMover.price} - dagens største krypto-bevegelse i NOK.`;
                     })()
@@ -443,7 +443,7 @@ export default function Home() {
                         );
                         
                         const positiveStocks = norwegianStocks.filter(stock => 
-                          parseFloat(stock.changePercent.replace(/[+%]/g, '')) > 0
+                          parseFloat(typeof stock.changePercent === 'string' ? stock.changePercent.replace(/[+%]/g, '') : '0') > 0
                         );
                         
                         if (norwegianStocks.length === 0) return "Henter norske markedsdata...";
@@ -477,9 +477,9 @@ export default function Home() {
                         }
                         
                         const strongSectors = [];
-                        if (energyStock && parseFloat(energyStock.changePercent.replace(/[+%]/g, '')) > 0) strongSectors.push('energi');
-                        if (bankStock && parseFloat(bankStock.changePercent.replace(/[+%]/g, '')) > 0) strongSectors.push('finans');
-                        if (seafoodStock && parseFloat(seafoodStock.changePercent.replace(/[+%]/g, '')) > 0) strongSectors.push('sjømat');
+                        if (energyStock && parseFloat(typeof energyStock.changePercent === 'string' ? energyStock.changePercent.replace(/[+%]/g, '') : '0') > 0) strongSectors.push('energi');
+                        if (bankStock && parseFloat(typeof bankStock.changePercent === 'string' ? bankStock.changePercent.replace(/[+%]/g, '') : '0') > 0) strongSectors.push('finans');
+                        if (seafoodStock && parseFloat(typeof seafoodStock.changePercent === 'string' ? seafoodStock.changePercent.replace(/[+%]/g, '') : '0') > 0) strongSectors.push('sjømat');
                         
                         if (strongSectors.length >= 2) {
                           return `▲ Flere norske nøkkelsektorer viser positiv momentum. ${strongSectors.join(', ')} leder utviklingen med støtte fra gunstige fundamentale faktorer. Utsiktene for norsk næringsliv forblir solide.`;
@@ -548,7 +548,7 @@ export default function Home() {
                         );
                         
                         const positiveCryptos = majorCryptos.filter(crypto => 
-                          parseFloat(crypto.changePercent.replace(/[+%]/g, '')) > 0
+                          parseFloat(typeof crypto.change_percent === 'string' ? crypto.change_percent.replace(/[+%]/g, '') : '0') > 0
                         );
                         
                         if (positiveCryptos.length > majorCryptos.length / 2) {
@@ -570,7 +570,7 @@ export default function Home() {
                       {(() => {
                         // Focus on regulatory environment affecting crypto
                         const volatileCryptos = cryptoData.filter(crypto => {
-                          const change = Math.abs(parseFloat(crypto.changePercent.replace(/[+%]/g, '')));
+                          const change = Math.abs(parseFloat(typeof crypto.change_percent === 'string' ? crypto.change_percent.replace(/[+%]/g, '') : '0'));
                           return change > 3;
                         });
                         
@@ -593,11 +593,11 @@ export default function Home() {
                       {(() => {
                         // Focus on Nordic/Norwegian crypto adoption with real market data
                         const totalCryptoValue = cryptoData.reduce((sum, crypto) => {
-                          const price = parseFloat(crypto.price.toString().replace(/[^\d.]/g, '')) || 0;
+                          const price = parseFloat(typeof crypto.price === 'string' ? crypto.price.replace(/[^\d.]/g, '') : '0') || 0;
                           return sum + price;
                         }, 0);
                         
-                        const positiveMovers = cryptoData.filter(c => parseFloat(c.changePercent.replace(/[+%]/g, '')) > 0);
+                        const positiveMovers = cryptoData.filter(c => parseFloat(typeof c.change_percent === 'string' ? c.change_percent.replace(/[+%]/g, '') : '0') > 0);
                         const adoption = positiveMovers.length > cryptoData.length / 2 ? 'øker' : 'stabiliseres';
                         
                         return `▶ Norske investorer viser ${adoption === 'øker' ? '▲' : '▶'} interesse for kryptovaluta som del av portefølje diversifisering. DNB og andre storbanker utvikler krypto-tjenester for institusjonelle kunder. Oljefondet evaluerer indirekte eksponering gjennom teknologiselskaper.`;
@@ -615,16 +615,16 @@ export default function Home() {
                       {(() => {
                         // Focus on current crypto market trends and technology
                         const sortedCryptos = cryptoData.sort((a, b) => {
-                          const aChange = Math.abs(parseFloat(a.changePercent?.replace('%', '').replace('+', '') || '0'));
-                          const bChange = Math.abs(parseFloat(b.changePercent?.replace('%', '').replace('+', '') || '0'));
+                          const aChange = Math.abs(parseFloat(typeof a.change_percent === 'string' ? a.change_percent.replace('%', '').replace('+', '') : '0'));
+                          const bChange = Math.abs(parseFloat(typeof b.change_percent === 'string' ? b.change_percent.replace('%', '').replace('+', '') : '0'));
                           return bChange - aChange;
                         });
                         
                         if (sortedCryptos.length === 0) return "Henter teknologianalyser...";
                         
                         const topMover = sortedCryptos[0];
-                        const change = topMover.changePercent || '0%';
-                        const isPositive = !change.includes('-');
+                        const change = typeof topMover.change_percent === 'string' ? topMover.change_percent : '0%';
+                        const isPositive = typeof topMover.change_percent === 'string' ? !topMover.change_percent.includes('-') : false;
                         const direction = isPositive ? '▲' : '▼';
                         
                         return `${direction} Blockchain-infrastruktur fortsetter å modnes med fokus på skalering og energieffektivitet. Web3-integrasjoner øker blant norske fintech-selskaper og tradisjonelle banker. Smart kontrakt-adopsjonen akselererer innen forsikring og supply chain management.`;
@@ -660,15 +660,15 @@ export default function Home() {
                       
                       // Calculate based on positive vs negative movers
                       const positiveMovers = cryptoData.filter(crypto => 
-                        parseFloat(crypto.changePercent.replace(/[+%]/g, '')) > 0
+                        parseFloat(typeof crypto.change_percent === 'string' ? crypto.change_percent.replace(/[+%]/g, '') : '0') > 0
                       );
                       const negativeMovers = cryptoData.filter(crypto => 
-                        parseFloat(crypto.changePercent.replace(/[+%]/g, '')) < 0
+                        parseFloat(typeof crypto.change_percent === 'string' ? crypto.change_percent.replace(/[+%]/g, '') : '0') < 0
                       );
                       
                       // Calculate average change
                       const avgChange = cryptoData.reduce((sum, crypto) => {
-                        return sum + parseFloat(crypto.changePercent.replace(/[+%]/g, ''));
+                        return sum + parseFloat(typeof crypto.change_percent === 'string' ? crypto.change_percent.replace(/[+%]/g, '') : '0');
                       }, 0) / cryptoData.length;
                       
                       // Convert to 0-100 scale (normalize around typical crypto volatility)
@@ -711,7 +711,7 @@ export default function Home() {
                     if (!cryptoData || cryptoData.length === 0) return null;
                     
                     const avgChange = cryptoData.reduce((sum, crypto) => {
-                      return sum + parseFloat(crypto.changePercent.replace(/[+%]/g, ''));
+                      return sum + parseFloat(typeof crypto.change_percent === 'string' ? crypto.change_percent.replace(/[+%]/g, '') : '0');
                     }, 0) / cryptoData.length;
                     
                     let index = 50 + (avgChange * 5);
@@ -753,16 +753,16 @@ export default function Home() {
                       <div key={crypto.symbol} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div>
                           <div className="font-medium text-black">{crypto.symbol}</div>
-                          <div className="text-sm text-gray-500">{crypto.name}</div>
+                          <div className="text-sm text-gray-500">{typeof crypto.name === 'string' ? crypto.name : ''}</div>
                         </div>
                         <div className="text-right">
-                          <div className="font-medium">{crypto.price}</div>
+                          <div className="font-medium">{typeof crypto.price === 'string' ? crypto.price : ''}</div>
                           <div className={`text-sm px-2 py-1 rounded ${
-                            crypto.isPositive 
+                            typeof crypto.change_percent === 'string' && !crypto.change_percent.includes('-')
                               ? 'text-green-600 bg-green-100' 
                               : 'text-red-600 bg-red-100'
                           }`}>
-                            {crypto.changePercent}
+                            {typeof crypto.change_percent === 'string' ? crypto.change_percent : ''}
                           </div>
                         </div>
                       </div>
@@ -788,16 +788,16 @@ export default function Home() {
                     <div key={stock.symbol} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div>
                         <div className="font-medium text-black">{stock.symbol}</div>
-                        <div className="text-sm text-gray-500">{stock.name}</div>
+                        <div className="text-sm text-gray-500">{typeof stock.name === 'string' ? stock.name : ''}</div>
                       </div>
                       <div className="text-right">
-                        <div className="font-medium">{stock.price} NOK</div>
+                        <div className="font-medium">{typeof stock.price === 'string' ? stock.price : ''} NOK</div>
                         <div className={`text-sm px-2 py-1 rounded ${
-                          stock.isPositive 
+                          typeof stock.changePercent === 'string' && !stock.changePercent.includes('-')
                             ? 'text-green-600 bg-green-100' 
                             : 'text-red-600 bg-red-100'
                         }`}>
-                          {stock.changePercent}
+                          {typeof stock.changePercent === 'string' ? stock.changePercent : ''}
                         </div>
                       </div>
                     </div>
@@ -825,16 +825,16 @@ export default function Home() {
                       <div key={crypto.symbol} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div>
                           <div className="font-medium text-black">{crypto.symbol}</div>
-                          <div className="text-sm text-gray-500">{crypto.name}</div>
+                          <div className="text-sm text-gray-500">{typeof crypto.name === 'string' ? crypto.name : ''}</div>
                         </div>
                         <div className="text-right">
-                          <div className="font-medium">{crypto.price}</div>
+                          <div className="font-medium">{typeof crypto.price === 'string' ? crypto.price : ''}</div>
                           <div className={`text-sm px-2 py-1 rounded ${
-                            crypto.isPositive 
+                            typeof crypto.change_percent === 'string' && !crypto.change_percent.includes('-')
                               ? 'text-green-600 bg-green-100' 
                               : 'text-red-600 bg-red-100'
                           }`}>
-                            {crypto.changePercent}
+                            {typeof crypto.change_percent === 'string' ? crypto.change_percent : ''}
                           </div>
                         </div>
                       </div>
@@ -867,16 +867,16 @@ export default function Home() {
                       <div key={currency.symbol} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div>
                           <div className="font-medium text-black">{currency.symbol}</div>
-                          <div className="text-sm text-gray-500">{currency.name}</div>
+                          <div className="text-sm text-gray-500">{typeof currency.name === 'string' ? currency.name : ''}</div>
                         </div>
                         <div className="text-right">
-                          <div className="font-medium">{currency.price} NOK</div>
+                          <div className="font-medium">{typeof currency.price === 'string' ? currency.price : ''} NOK</div>
                           <div className={`text-sm px-2 py-1 rounded ${
-                            currency.isPositive 
+                            typeof currency.changePercent === 'string' && !currency.changePercent.includes('-')
                               ? 'text-green-600 bg-green-100' 
                               : 'text-red-600 bg-red-100'
                           }`}>
-                            {currency.changePercent}
+                            {typeof currency.changePercent === 'string' ? currency.changePercent : ''}
                           </div>
                         </div>
                       </div>
