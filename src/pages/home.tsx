@@ -7,6 +7,7 @@ import CryptoInsightsCard from "@/components/insights/crypto-insights-card";
 import DagensStatistikk from "@/components/market/dagens-statistikk";
 import { Bitcoin, TrendingUp, Building2, Target, Globe, Cpu, Shield } from "lucide-react";
 import { fetchArticles, fetchMarketData, fetchInsights, getFearGreedIndex, getDailyPulse } from "@/lib/queryClient";
+import { safeGetChangePercent, safeGetPrice, safeGetChange, isPositiveChange } from "@/lib/marketDataHelpers";
 import type { Article, MarketData } from "@/shared/schema";
 
 export default function Home() {
@@ -84,7 +85,7 @@ export default function Home() {
         if (stockItem) {
           statisticsData.push({
             name: sector.name,
-            change: parseFloat(stockItem.changePercent.replace(/[+%]/g, '')),
+            change: safeGetChangePercent(stockItem),
             icon: sector.icon
           });
         }
@@ -97,7 +98,7 @@ export default function Home() {
       
       if (norwegianStocks.length > 0) {
         const avgChange = norwegianStocks.reduce((sum, stock) => {
-          return sum + parseFloat(stock.changePercent.replace(/[+%]/g, ''));
+          return sum + safeGetChangePercent(stock);
         }, 0) / norwegianStocks.length;
         
         statisticsData.push({
@@ -112,7 +113,7 @@ export default function Home() {
       if (eqnrData) {
         statisticsData.push({
           name: 'Norsk Olje',
-          change: parseFloat(eqnrData.changePercent.replace(/[+%]/g, '')),
+          change: safeGetChangePercent(eqnrData),
           icon: '🛢️'
         });
       }
