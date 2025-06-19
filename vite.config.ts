@@ -1,39 +1,32 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import { resolve } from "path";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
 
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": resolve(__dirname, "./src"),
-      "@/components": resolve(__dirname, "./src/components"),
-      "@/lib": resolve(__dirname, "./src/lib"),
-      "@/hooks": resolve(__dirname, "./src/hooks"),
-      "@/pages": resolve(__dirname, "./src/pages"),
-      "@/shared": resolve(__dirname, "./src/shared"),
-    },
-  },
-  server: {
-    port: 5173,
-    host: "0.0.0.0",
-    proxy: {
-      "/api": {
-        target: "http://localhost:5000",
-        changeOrigin: true,
-      },
+      "@": path.resolve(__dirname, "./src"),
+      "@/components": path.resolve(__dirname, "./src/components"),
+      "@/lib": path.resolve(__dirname, "./src/lib"),
+      "@/hooks": path.resolve(__dirname, "./src/hooks"),
+      "@/pages": path.resolve(__dirname, "./src/pages"),
+      "@/shared": path.resolve(__dirname, "./src/shared"),
     },
   },
   build: {
-    outDir: "dist",
+    outDir: 'dist',
     sourcemap: false,
     rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ["react", "react-dom"],
-          ui: ["@radix-ui/react-dialog", "@radix-ui/react-dropdown-menu"],
-        },
-      },
-    },
+      onwarn(warning, warn) {
+        // Suppress certain warnings during build
+        if (warning.code === 'UNUSED_EXTERNAL_IMPORT') return
+        warn(warning)
+      }
+    }
   },
-});
+  esbuild: {
+    logOverride: { 'this-is-undefined-in-esm': 'silent' }
+  }
+})
