@@ -36,6 +36,6 @@
       "@/shared/*": ["./src/shared/*"]
     }
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src", "src/types/global.d.ts"],
+  "exclude": ["node_modules", "dist", "build"]
 }

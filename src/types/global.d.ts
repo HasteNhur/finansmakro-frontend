@@ -1,5 +1,4 @@
-// Global type declarations for build compatibility
-
+// Global type overrides for production builds
 declare global {
   interface MarketData {
     id: number;
@@ -8,11 +7,10 @@ declare global {
     price: number;
     change: number;
     change_percent: number;
-    changePercent?: number; // Compatibility alias
+    changePercent: number; // Alias for compatibility
     currency: string;
     category: string;
-    created_at?: string;
-    updated_at?: string;
+    last_updated: string;
     isPositive?: boolean; // Computed property
   }
 
@@ -24,23 +22,43 @@ declare global {
     author: string;
     source: string;
     url: string;
-    image_url?: string;
+    image_url: string | null;
     published_at: string;
     category: string;
     reading_time: string;
-    featured: boolean;
-    created_at?: string;
-    updated_at?: string;
+    created_at: string;
+    updated_at: string;
   }
 
   interface Insight {
     id: number;
     article_title: string;
-    insight_text: string;
-    confidence_score: number;
-    created_at?: string;
-    updated_at?: string;
+    content: string;
+    generated_at: string;
+    created_at: string;
+    updated_at: string;
   }
+}
+
+// Module augmentation for better type safety
+declare module "*.png" {
+  const value: string;
+  export default value;
+}
+
+declare module "*.jpg" {
+  const value: string;
+  export default value;
+}
+
+declare module "*.jpeg" {
+  const value: string;
+  export default value;
+}
+
+declare module "*.svg" {
+  const value: string;
+  export default value;
 }
 
 export {};
