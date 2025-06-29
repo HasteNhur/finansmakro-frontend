@@ -13,13 +13,21 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // Unified data fetching that works with both Express and Supabase
 export async function fetchArticles() {
-  const response = await fetch(`${SUPABASE_URL}/functions/v1/get-articles`, {
-    headers: {
-      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json'
+  try {
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/get-articles`, {
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  });
-  return response.json();
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+    throw error;
+  }
 }
 
 export async function fetchFeaturedArticles() {
@@ -40,43 +48,75 @@ export async function fetchFeaturedArticles() {
 }
 
 export async function fetchMarketData() {
-  const response = await fetch(`${SUPABASE_URL}/functions/v1/get-market-data`, {
-    headers: {
-      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json'
+  try {
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/get-market-data`, {
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  });
-  return response.json();
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching market data:', error);
+    throw error;
+  }
 }
 
 export async function fetchInsights() {
-  const response = await fetch(`${SUPABASE_URL}/functions/v1/get-insights`, {
-    headers: {
-      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json'
+  try {
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/get-insights`, {
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  });
-  return response.json();
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching insights:', error);
+    throw error;
+  }
 }
 
 export async function getFearGreedIndex() {
-  const response = await fetch(`${SUPABASE_URL}/functions/v1/fear-greed-index`, {
-    headers: {
-      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json'
+  try {
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/fear-greed-index`, {
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  });
-  return response.json();
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching fear greed index:', error);
+    throw error;
+  }
 }
 
 export async function getDailyPulse() {
-  const response = await fetch(`${SUPABASE_URL}/functions/v1/daily-pulse`, {
-    headers: {
-      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json'
+  try {
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/daily-pulse`, {
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  });
-  return response.json();
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching daily pulse:', error);
+    throw error;
+  }
 }
 
 export const queryClient = new QueryClient({
